@@ -28,23 +28,19 @@ const report = require('./utils/logger').report;
 
 // Load JSON Schema either from file or url, depending on the scructure of passed path
 //function loadDataModelSchema(path) {
-
 //    if (startHttp.test(path)) {
 //        loadDataModelSchemaFromUrl(path);
 //    } else {
 //        loadDataModelSchemaFromFile(path);
 //    }
-
 //}
 
 
 //function loadDataModelSchemaFromFile(path) {
-
 //    console.log('Loading Data Model Json Schema from File');
 //    var map = fs.readFileSync(filename, 'utf8');
 //    console.log('JSON Schema file loaded');
 //    return JSON.parse(map);
-
 //}
 
 
