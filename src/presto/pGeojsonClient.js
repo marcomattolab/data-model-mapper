@@ -25,10 +25,10 @@ const pipeline = util.promisify(require('stream').pipeline);
 const { Client } = require('presto-stream-client');
 
 
-function pJsonClient(contentJson, sourceDataType, mapPath, dataModelPath, filename) {
-    var json = '';
+function pGeojsonClient(contentJson, sourceDataType, mapPath, dataModelPath, filename) {
+    var geojson = '';
     try {
-        log.info("## Doing query with Presto (JSON)...");
+        log.info("## Doing query with Presto (GEOJSON)...");
 
         var querySql=contentJson.querySql;
         var outFileFormat=contentJson.outFileFormat;
@@ -46,24 +46,30 @@ function pJsonClient(contentJson, sourceDataType, mapPath, dataModelPath, filena
 
         client.execute({
             query: ''+querySql,
-            //query: 'SELECT l.returnflag as address, sum(l.quantity) AS sum_qty FROM  tpch.sf1.lineitem AS l WHERE 1=1 GROUP BY l.returnflag',
-            //query: 'SELECT l.returnflag, l.linestatus, sum(l.quantity) AS sum_qty, sum(l.extendedprice) AS sum_base_price, sum(l.extendedprice * (1 - l.discount)) AS sum_disc_price, sum(l.extendedprice * (1 - l.discount) * (1 + l.tax)) AS sum_charge, avg(l.quantity) AS avg_qty, avg(l.extendedprice) AS avg_price, avg(l.discount) AS avg_disc, count(*) AS count_order FROM tpch.sf1.lineitem AS l WHERE l.shipdate <= DATE \'1998-12-01\' - INTERVAL \'90\' DAY GROUP BY l.returnflag, l.linestatus ORDER BY l.returnflag, l.linestatus',
-            //query: 'SHOW SCHEMAS',
             //catalog: 'tpch',
             //schema:  'sf1',
             objectMode: true
         }).then((statement)=>{
-            statement.on('columns', (columns)=> {  // [{name:"cnt",type:"bigint"}, {name:"usergroup",type:"varchar"}]
+            statement.on('columns', (columns)=> { 
                 //log.info("## (ALL) => "+JSON.stringify(columns));
             });
             statement.on('data', (row)=> {
-                //log.info("# (ROW) => " + JSON.stringify(row)); // {cnt:1234,usergroup:"admin"}
-                json += JSON.stringify(row) + "," + "\n";
+                //log.info("# (ROW) => " + JSON.stringify(row).replaceAll('\"','"') );
+                //geojson += JSON.stringify(row).replaceAll('\"','"') + "," + "\n";
+                const keys = Object.keys(row);
+                for (let i = 0; i < keys.length; i++) {
+                  const key = keys[i];
+                  geojson +=  key + ' : ' + row[key] + (i+1==keys.length ? "" : ",");
+                }
+                geojson += "\n";
+                console.log(" geojson (I) ==> " + geojson);
+
+
             });
             statement.on('end',()=> {
-                const jsonValid = json != '' ? '[' + json.slice(0, -2) + ']' : json;
-                log.info('## Done JSON: ' + jsonValid);
-                sourceData = createFile(jsonValid, filename, outFileFormat);
+                const geojsonValid = buildGeojson(geojson);
+                log.info('## Done GEOJSON: ' + geojsonValid);
+                sourceData = createFile(geojsonValid, filename, outFileFormat);
                 process.processSource(sourceData, sourceDataType, mapPath, dataModelPath);
                 log.info('## processSource, sourceData: ' + sourceData);
 
@@ -85,6 +91,13 @@ function createFile(content, filename, outFileFormat) {
     return sourceData;
 }
 
+function buildGeojson(geojson) {
+    let vaildGeojson = geojson != '' ? geojson.slice(0, -2) : geojson;
+    vaildGeojson = '{"type":"FeatureCollection", "features": [\n' + vaildGeojson + ']}';
+    return vaildGeojson;
+}
+
+
 module.exports = {
-    pJsonClient: pJsonClient
+    pGeojsonClient: pGeojsonClient
 };

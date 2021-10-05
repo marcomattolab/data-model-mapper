@@ -46,9 +46,6 @@ function pCsvClient(contentJson, sourceDataType, mapPath, dataModelPath, filenam
 
         client.execute({
             query: ''+querySql,
-            //query: 'SELECT l.returnflag as address, sum(l.quantity) AS sum_qty FROM  tpch.sf1.lineitem AS l WHERE 1=1 GROUP BY l.returnflag',
-            //query: 'SELECT l.returnflag, l.linestatus, sum(l.quantity) AS sum_qty, sum(l.extendedprice) AS sum_base_price, sum(l.extendedprice * (1 - l.discount)) AS sum_disc_price, sum(l.extendedprice * (1 - l.discount) * (1 + l.tax)) AS sum_charge, avg(l.quantity) AS avg_qty, avg(l.extendedprice) AS avg_price, avg(l.discount) AS avg_disc, count(*) AS count_order FROM tpch.sf1.lineitem AS l WHERE l.shipdate <= DATE \'1998-12-01\' - INTERVAL \'90\' DAY GROUP BY l.returnflag, l.linestatus ORDER BY l.returnflag, l.linestatus',
-            //query: 'SHOW SCHEMAS',
             //catalog: 'tpch',
             //schema:  'sf1',
             objectMode: true
@@ -59,23 +56,23 @@ function pCsvClient(contentJson, sourceDataType, mapPath, dataModelPath, filenam
                     csv += '"'+ item.name + '"' + (index === columns.length - 1 ? '' : ';');
                 });
                 csv += "\n";
-                //console.log("## (ALL) => "+ csv);
+                //log.info("## (ALL) => "+ csv);
             });
             statement.on('data', (row) => {
                 const keys = Object.keys(row);
                 for (let i = 0; i < keys.length; i++) {
                   const key = keys[i];
-                  //console.log("# key: " + key + "  value: " +row[key]);
+                  //log.info("# key: " + key + "  value: " +row[key]);
                   csv += row[key] + (i+1==keys.length ? "" : ";");
                 }
                 csv += "\n";
-                //console.log("## (ROW) => "+ csv);
+                //log.info("## (ROW) => "+ csv);
             });
             statement.on('end',()=> {
-                console.log('## Done CSV: ' + csv);
+                log.info('## Done CSV: ' + csv);
                 sourceData = createFile(csv, filename, outFileFormat);
                 process.processSource(sourceData, sourceDataType, mapPath, dataModelPath);
-                console.log('## processSource, sourceData: ' + sourceData);
+                log.info('## processSource, sourceData: ' + sourceData);
 
             });
         },(error)=> {

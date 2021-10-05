@@ -25,6 +25,7 @@ const utils = require('../utils/utils');
 const fs = require('fs');
 const pJsonClient = require('./pJsonClient');
 const pCsvClient = require('./pCsvClient');
+const pGeojsonClient = require('./pGeojsonClient');
 
 
 module.exports = (sourceDataIn, mapPathIn, dataModelIn) => {
@@ -58,27 +59,26 @@ module.exports = (sourceDataIn, mapPathIn, dataModelIn) => {
                 }
             }
 
-            //Retrieve query, fileFormat
+            //Retrieve configJson with query and outFileFormat
             //log.info("## queryPath " + queryPath);
             var data=fs.readFileSync(queryPath, 'utf8');
-            var contentJson=JSON.parse(data);
+            var configJson=JSON.parse(data);
             //log.info("## data " + data);
             
-            if ('json' == contentJson.outFileFormat) {
+            if ('json' == configJson.outFileFormat) {
                 filename= queryPath.slice(0, -5);
                 filename+= getFileSuffix();
-                pJsonClient.pJsonClient(contentJson, "", mapPath, dataModelPath, filename);            
+                pJsonClient.pJsonClient(configJson, "", mapPath, dataModelPath, filename);            
 
-            } else if ('csv' == contentJson.outFileFormat) {
+            } else if ('csv' == configJson.outFileFormat) {
                 filename= queryPath.slice(0, -5);
                 filename+= getFileSuffix();
-                pCsvClient.pCsvClient(contentJson, "", mapPath, dataModelPath, filename);
+                pCsvClient.pCsvClient(configJson, "", mapPath, dataModelPath, filename);
 
-            } else if ('geojson' == contentJson.outFileFormat) {
+            } else if ('geojson' == configJson.outFileFormat) {
                 filename = queryPath.slice(0, -8);
                 filename+= getFileSuffix();
-                //TODO DEVELOP
-                //pGeojsonClient.pGeojsonClient(contentJson, "", mapPath, dataModelPath, filename);
+                pGeojsonClient.pGeojsonClient(configJson, "", mapPath, dataModelPath, filename);
             }
 
         } catch (error) {
