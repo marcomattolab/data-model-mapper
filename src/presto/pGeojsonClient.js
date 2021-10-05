@@ -54,17 +54,14 @@ function pGeojsonClient(contentJson, sourceDataType, mapPath, dataModelPath, fil
                 //log.info("## (ALL) => "+JSON.stringify(columns));
             });
             statement.on('data', (row)=> {
-                //log.info("# (ROW) => " + JSON.stringify(row).replaceAll('\"','"') );
-                //geojson += JSON.stringify(row).replaceAll('\"','"') + "," + "\n";
+                geojson += "{";
                 const keys = Object.keys(row);
                 for (let i = 0; i < keys.length; i++) {
                   const key = keys[i];
-                  geojson +=  key + ' : ' + row[key] + (i+1==keys.length ? "" : ",");
+                  geojson +=  '"'+key + '" : ' +  (row[key][0] == '{' ? row[key] : '"' + row[key] + '"') + (i+1==keys.length ? "" : ",");
                 }
-                geojson += "\n";
-                console.log(" geojson (I) ==> " + geojson);
-
-
+                geojson += "},\n";
+                //console.log(" geojson (I) ==> " + geojson);
             });
             statement.on('end',()=> {
                 const geojsonValid = buildGeojson(geojson);
