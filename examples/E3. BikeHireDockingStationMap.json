@@ -1,0 +1,13 @@
+{ 
+	"address" : { 
+					"streetAddress": "localita_di_intervento"
+				},
+	 "areaServed": ["attrattore_tipo",
+	                  "attrattore_nome"] ,
+					  
+	 "totalSlotNumber": "tot_posti",
+	 "name": ["static:Rastrelliere - ", 
+				"localita_di_intervento"],
+     "entitySourceId":["static:ds377"],
+	 "targetDataModel": "BikeHireDockingStation"
+}

@@ -25,10 +25,10 @@ const pipeline = util.promisify(require('stream').pipeline);
 const { Client } = require('presto-stream-client');
 
 
-function pJsonClient(contentJson, sourceDataType, mapPath, dataModelPath, filename) {
-    var json = '';
+function pCsvClient(contentJson, sourceDataType, mapPath, dataModelPath, filename) {
+    var csv = '';
     try {
-        log.info("## Doing query with Presto (JSON)...");
+        log.info("## Doing query with Presto (CSV)...");
 
         var querySql=contentJson.querySql;
         var outFileFormat=contentJson.outFileFormat;
@@ -53,17 +53,27 @@ function pJsonClient(contentJson, sourceDataType, mapPath, dataModelPath, filena
             //schema:  'sf1',
             objectMode: true
         }).then((statement)=>{
-            statement.on('columns', (columns)=> {  // [{name:"cnt",type:"bigint"}, {name:"usergroup",type:"varchar"}]
-                //console.log("## (ALL) => "+JSON.stringify(columns));
+            statement.on('columns', (columns)=> {
+                columns.forEach(function(item, index, columns) {
+                    //csv += item.name + (index === columns.length - 1 ? '' : ';');
+                    csv += '"'+ item.name + '"' + (index === columns.length - 1 ? '' : ';');
+                });
+                csv += "\n";
+                //console.log("## (ALL) => "+ csv);
             });
-            statement.on('data', (row)=> {
-                //console.log("# (ROW) => " + JSON.stringify(row)); // {cnt:1234,usergroup:"admin"}
-                json += JSON.stringify(row) + "," + "\n";
+            statement.on('data', (row) => {
+                const keys = Object.keys(row);
+                for (let i = 0; i < keys.length; i++) {
+                  const key = keys[i];
+                  //console.log("# key: " + key + "  value: " +row[key]);
+                  csv += row[key] + (i+1==keys.length ? "" : ";");
+                }
+                csv += "\n";
+                //console.log("## (ROW) => "+ csv);
             });
             statement.on('end',()=> {
-                const jsonValid = json != '' ? '[' + json.slice(0, -2) + ']' : json;
-                console.log('## Done JSON: ' + jsonValid);
-                sourceData = createFile(jsonValid, filename, outFileFormat);
+                console.log('## Done CSV: ' + csv);
+                sourceData = createFile(csv, filename, outFileFormat);
                 process.processSource(sourceData, sourceDataType, mapPath, dataModelPath);
                 console.log('## processSource, sourceData: ' + sourceData);
 
@@ -86,5 +96,5 @@ function createFile(content, filename, outFileFormat) {
 }
 
 module.exports = {
-    pJsonClient: pJsonClient
+    pCsvClient: pCsvClient
 };

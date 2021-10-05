@@ -24,6 +24,8 @@ const utils = require('../utils/utils');
 
 const fs = require('fs');
 const pJsonClient = require('./pJsonClient');
+const pCsvClient = require('./pCsvClient');
+
 
 module.exports = (sourceDataIn, mapPathIn, dataModelIn) => {
     log.info("Initializing Mapper in Command Line Extended Mode (Presto)");
@@ -56,34 +58,27 @@ module.exports = (sourceDataIn, mapPathIn, dataModelIn) => {
                 }
             }
 
-            // Retrieve query, fileFormat
+            //Retrieve query, fileFormat
             //log.info("## queryPath " + queryPath);
             var data=fs.readFileSync(queryPath, 'utf8');
             var contentJson=JSON.parse(data);
             //log.info("## data " + data);
             
             if ('json' == contentJson.outFileFormat) {
-                filename = queryPath.slice(0, -5);
-                var dt = new Date();
-                filename+=dt.getFullYear() + "_" + (dt.getMonth() + 1) + "_" + dt.getDate() + "_"+dt.getTime();
+                filename= queryPath.slice(0, -5);
+                filename+= getFileSuffix();
+                pJsonClient.pJsonClient(contentJson, "", mapPath, dataModelPath, filename);            
 
-                pJsonClient.pJsonClient(contentJson, "", mapPath, dataModelPath, filename);
-            
             } else if ('csv' == contentJson.outFileFormat) {
-                //TODO DEVELOP
-                filename = queryPath.slice(0, -4);
-                var dt = new Date();
-                filename+=dt.getFullYear() + "_" + (dt.getMonth() + 1) + "_" + dt.getDate() + "_"+dt.getTime();
-
-                pJsonClient.pJsonClient(contentJson, "", mapPath, dataModelPath, filename);
+                filename= queryPath.slice(0, -5);
+                filename+= getFileSuffix();
+                pCsvClient.pCsvClient(contentJson, "", mapPath, dataModelPath, filename);
 
             } else if ('geojson' == contentJson.outFileFormat) {
-                //TODO DEVELOP
                 filename = queryPath.slice(0, -8);
-                var dt = new Date();
-                filename+=dt.getFullYear() + "_" + (dt.getMonth() + 1) + "_" + dt.getDate() + "_"+dt.getTime();
-                
-                pJsonClient.pJsonClient(contentJson, "", mapPath, dataModelPath, filename);
+                filename+= getFileSuffix();
+                //TODO DEVELOP
+                //pGeojsonClient.pGeojsonClient(contentJson, "", mapPath, dataModelPath, filename);
             }
 
         } catch (error) {
@@ -94,4 +89,9 @@ module.exports = (sourceDataIn, mapPathIn, dataModelIn) => {
         log.error("There was an error while initializing Mapper configuration");
     }
 };
+
+function getFileSuffix() {
+    var dt = new Date();
+    return dt.getFullYear() + "_" + (dt.getMonth() + 1) + "_" + dt.getDate() + "_" + dt.getTime();
+}
 
