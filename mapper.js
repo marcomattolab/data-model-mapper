@@ -29,6 +29,9 @@ if (config.mode === 'commandLine') {
 } else if (config.mode === 'server') {
     const server = require('./src/server/setup');
     return server();
+} else if (config.mode === 'commandLineExt') {
+    const cliExt = require('./src/presto/setup');
+    return cliExt();
 }
 
 
@@ -39,5 +42,8 @@ module.exports = (sourceDataIn, mapPathIn, dataModelIn) => {
     } else if (config.mode === 'server') {
         const server = require('./src/server/setup');
         return server();
+    } else if (config.mode === 'commandLineExt') {
+        const cliExt = require('./src/presto/setup');
+        return cliExt(sourceDataIn, mapPathIn, dataModelIn);
     }
 };

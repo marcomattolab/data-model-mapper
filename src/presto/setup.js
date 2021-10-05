@@ -22,8 +22,10 @@ const config = require('../../config');
 const log = require('../utils/logger').app(module);
 const utils = require('../utils/utils');
 
+const prestoJsonClient = require('../presto/prestoJsonClient');
+
 module.exports = (sourceDataIn, mapPathIn, dataModelIn) => {
-    log.info("Initializing Mapper in Command Line Mode");
+    log.info("Initializing Mapper in Command Line Extended Mode (Presto)");
 
     if (commandLine.init()) {
 
@@ -31,9 +33,12 @@ module.exports = (sourceDataIn, mapPathIn, dataModelIn) => {
         var sourceData = sourceDataIn || commandLine.getParam('sourceDataPath');
         var mapPath = mapPathIn || commandLine.getParam('mapPath');
         var dataModelPath = utils.getDataModelPath(dataModelIn) || commandLine.getParam('targetDataModel');
-        
+
         try {
-            process.processSource(sourceData, "", mapPath, dataModelPath);
+            log.info("## Extended Mode Invoking Presto ...");
+            prestoJsonClient.prestoJsonClient("", "", "", sourceData, "", mapPath, dataModelPath);
+
+            //process.processSource(sourceData, "", mapPath, dataModelPath);
         } catch (error) {
             return error;
         }
