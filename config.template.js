@@ -23,7 +23,7 @@ var config = {
     * Followings are related to global configurations of the application
     **/
     env: 'debug', // debug or production
-    mode: 'commandLine', // commandLine or server 
+    mode: 'commandLine', // commandLine or server or commandLineExt
     logLevel: 'debug', // error, warn, info, verbose, debug or silly
     httpPort: 8081, // PORT where the application will listen if ran in server mode
     modelSchemaFolder: path.join(__dirname, "dataModels"), // DO NOT TOUCH - Data Model schemas folder
@@ -73,13 +73,16 @@ var config = {
     // (SOON) If the entityNameField is not specified in the map, the following indicates the prefix of generated ID 
     // it will be concatenated with the row / object number. If empty, that prefix will be the source filename
 	
-    entityDefaultPrefix: "ds" // SOON
+    entityDefaultPrefix: "ds", // SOON
 	
     /*********************************************************************/
 
-				 
-  
-
+    /********************** GLOBAL PRESTO CONFIGURATION *****************
+    * Followings are related to global configurations of Presto
+    **/
+    presto_user: "presto",
+    presto_host: "localhost",
+    presto_port: 8080
 };
 
 /*************** ORION Context Broker CONFIGURATION **********************/

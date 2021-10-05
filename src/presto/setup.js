@@ -22,23 +22,70 @@ const config = require('../../config');
 const log = require('../utils/logger').app(module);
 const utils = require('../utils/utils');
 
-const prestoJsonClient = require('../presto/prestoJsonClient');
+const fs = require('fs');
+const pJsonClient = require('./pJsonClient');
 
 module.exports = (sourceDataIn, mapPathIn, dataModelIn) => {
     log.info("Initializing Mapper in Command Line Extended Mode (Presto)");
 
     if (commandLine.init()) {
-
         // file path or directly string/binary content 
-        var sourceData = sourceDataIn || commandLine.getParam('sourceDataPath');
+        //var sourceData = sourceDataIn || commandLine.getParam('sourceDataPath');
+
+        // query path 
+        var queryPath = sourceDataIn || commandLine.getParam('queryPath');
+
         var mapPath = mapPathIn || commandLine.getParam('mapPath');
         var dataModelPath = utils.getDataModelPath(dataModelIn) || commandLine.getParam('targetDataModel');
 
         try {
             log.info("## Extended Mode Invoking Presto ...");
-            prestoJsonClient.prestoJsonClient("", "", "", sourceData, "", mapPath, dataModelPath);
 
-            //process.processSource(sourceData, "", mapPath, dataModelPath);
+            if (queryPath) {
+                if (typeof queryPath === 'string') {
+                    let queryPathObj = utils.parseFilePath(queryPath);
+                    var extension = queryPathObj.ext;
+                    if (!extension) {
+                        log.error('The provided url/file query path does not have file extension');
+                        return Promise.reject('The provided query url / file path does not have file extension');
+                    }
+                    if (extension != ".json") {
+                        log.error('The provided url/file query path does not have "json" extension');
+                        return Promise.reject('The provided query url / file path does not have "json" extension');
+                    }
+                }
+            }
+
+            // Retrieve query, fileFormat
+            //log.info("## queryPath " + queryPath);
+            var data=fs.readFileSync(queryPath, 'utf8');
+            var contentJson=JSON.parse(data);
+            //log.info("## data " + data);
+            
+            if ('json' == contentJson.outFileFormat) {
+                filename = queryPath.slice(0, -5);
+                var dt = new Date();
+                filename+=dt.getFullYear() + "_" + (dt.getMonth() + 1) + "_" + dt.getDate() + "_"+dt.getTime();
+
+                pJsonClient.pJsonClient(contentJson, "", mapPath, dataModelPath, filename);
+            
+            } else if ('csv' == contentJson.outFileFormat) {
+                //TODO DEVELOP
+                filename = queryPath.slice(0, -4);
+                var dt = new Date();
+                filename+=dt.getFullYear() + "_" + (dt.getMonth() + 1) + "_" + dt.getDate() + "_"+dt.getTime();
+
+                pJsonClient.pJsonClient(contentJson, "", mapPath, dataModelPath, filename);
+
+            } else if ('geojson' == contentJson.outFileFormat) {
+                //TODO DEVELOP
+                filename = queryPath.slice(0, -8);
+                var dt = new Date();
+                filename+=dt.getFullYear() + "_" + (dt.getMonth() + 1) + "_" + dt.getDate() + "_"+dt.getTime();
+                
+                pJsonClient.pJsonClient(contentJson, "", mapPath, dataModelPath, filename);
+            }
+
         } catch (error) {
             return error;
         }

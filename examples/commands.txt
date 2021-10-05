@@ -7,3 +7,8 @@ node mapper -s "examples\\3. BikeHireDockingStationSource.csv" -m "examples\\3. 
 
 node mapper -s "examples\\4. PointOfInterestSource.json" -m "examples\\4. PointOfInterestMap.json" -d PointOfInterest --rs 0 --re 3
 
+
+
+node mapper -q "examples\\5. PointOfInterestQuery.json" -m "examples\\5. PointOfInterestMap.json" -d PointOfInterest --rs 0 --re 3
+
+node mapper -q "examples\\6. BikeHireDockingStationQuery.json" -m "examples\\6. BikeHireDockingStationMap.json" -d BikeHireDockingStation --rs 0 --re 3

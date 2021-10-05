@@ -26,6 +26,12 @@ nconf.use('memory');
 
 process.argv.forEach(function (val, index, array) {
     nconf.argv({
+        'queryPath': {
+            alias: 'q',
+            describe: 'File path of the presto query file',
+            type: 'string',
+            demand: false
+        },
         'mapPath': {
             alias: 'm',
             describe: 'File path of the mapping Json',
@@ -165,13 +171,32 @@ const checkAndInitConf = () => {
         return false;
     }
 
+    /*********** QUERY PARAMETERS *********/
+    var queryPath = nconf.get('queryPath');
+    if (!queryPath && config.mode == 'commandLineExt') {
+        log.error('You need to specify the Query file path');
+        return false;
+    }
+    if (queryPath && utils.isValidPath(queryPath)) {
+        try {
+            queryPath = path.normalize(queryPath);
+        } catch (error) {
+            log.error("There was an error while normalizing Query Path: " + error);
+            return false;
+        }
+    } else {
+        if(config.mode == 'commandLineExt') {
+            log.error('Incorrect Query file path');
+            return false;
+        }
+    }
+
     var sourcePath = nconf.get('sourceDataPath');
-    if (!sourcePath) {
+    if (!sourcePath && config.mode == 'commandLine') {
         log.error('You need to specify the source file path');
         return false;
     }
-    //if (sourcePath && !sourcePath.match(pathPattern)) {
-    if (sourcePath && utils.isValidPath(sourcePath)) {
+    if (sourcePath && utils.isValidPath(sourcePath) && config.mode == 'commandLine') {
         try {
             sourcePath = path.normalize(sourcePath);
         } catch (error) {
@@ -179,9 +204,12 @@ const checkAndInitConf = () => {
             return false;
         }
     } else {
-        log.error('Incorrect source file path');
-        return false;
+        if(config.mode == 'commandLine') {
+            log.error('Incorrect source file path');
+            return false;
+        }
     }
+
 
     var dataModel = nconf.get('targetDataModel');
     if (!utils.checkInputDataModel(config.modelSchemaFolder, dataModel)) {
@@ -269,7 +297,6 @@ const checkAndInitConf = () => {
 
 
     /******* Set initialized confs as Global variables ***************/
-
     global.process.env.orionUrl = nconf.get('orionUrl');
     global.process.env.updateMode = nconf.get('updateMode');
     global.process.env.fiwareService = nconf.get('fiwareService');

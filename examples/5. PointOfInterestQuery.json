@@ -1,0 +1,6 @@
+{
+  "querySql":"SELECT l.returnflag as address, sum(l.quantity) AS sum_qty FROM  tpch.sf1.lineitem AS l WHERE 1=1 GROUP BY l.returnflag",
+  "outFileFormat":"json",
+  "catalog": "tpch",
+  "schema": "sf1"
+}
