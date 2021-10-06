@@ -20,20 +20,17 @@ const config = require('../../config');
 const log = require('../utils/logger').app(module);
 const fs = require('fs');
 const process = require('../utils/process');
-const util = require('util');
-const pipeline = util.promisify(require('stream').pipeline);
 const { Client } = require('presto-stream-client');
 
 
 function pJsonClient(contentJson, sourceDataType, mapPath, dataModelPath, filename) {
     var json = '';
     try {
-        log.info("## Doing query with Presto (JSON)...");
-
+        log.debug("## Doing query with Presto (JSON)...");
         var querySql=contentJson.querySql;
         var outFileFormat=contentJson.outFileFormat;
-        log.info("## querySql: " + querySql);
-        log.info("## outFileFormat: " + outFileFormat);
+        log.debug("## querySql: " + querySql);
+        log.debug("## outFileFormat: " + outFileFormat);
 
         //Presto Client - See https://github.com/serakfalcon/presto-stream-client
         const client = new Client({
@@ -54,18 +51,18 @@ function pJsonClient(contentJson, sourceDataType, mapPath, dataModelPath, filena
             objectMode: true
         }).then((statement)=>{
             statement.on('columns', (columns)=> {  // [{name:"cnt",type:"bigint"}, {name:"usergroup",type:"varchar"}]
-                //log.info("## (ALL) => "+JSON.stringify(columns));
+                //log.debug("## (ALL) => "+JSON.stringify(columns));
             });
             statement.on('data', (row)=> {
-                //log.info("# (ROW) => " + JSON.stringify(row)); // {cnt:1234,usergroup:"admin"}
+                //log.debug("# (ROW) => " + JSON.stringify(row)); // {cnt:1234,usergroup:"admin"}
                 json += JSON.stringify(row) + "," + "\n";
             });
             statement.on('end',()=> {
                 const jsonValid = json != '' ? '[' + json.slice(0, -2) + ']' : json;
-                log.info('## Done JSON: ' + jsonValid);
+                log.debug('## Done JSON: ' + jsonValid);
                 sourceData = createFile(jsonValid, filename, outFileFormat);
                 process.processSource(sourceData, sourceDataType, mapPath, dataModelPath);
-                log.info('## processSource, sourceData: ' + sourceData);
+                log.debug('## processSource, sourceData: ' + sourceData);
 
             });
         },(error)=> {

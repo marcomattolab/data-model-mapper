@@ -20,20 +20,17 @@ const config = require('../../config');
 const log = require('../utils/logger').app(module);
 const fs = require('fs');
 const process = require('../utils/process');
-const util = require('util');
-const pipeline = util.promisify(require('stream').pipeline);
 const { Client } = require('presto-stream-client');
 
 
 function pCsvClient(contentJson, sourceDataType, mapPath, dataModelPath, filename) {
     var csv = '';
     try {
-        log.info("## Doing query with Presto (CSV)...");
-
+        log.debug("## Doing query with Presto (CSV)...");
         var querySql=contentJson.querySql;
         var outFileFormat=contentJson.outFileFormat;
-        log.info("## querySql: " + querySql);
-        log.info("## outFileFormat: " + outFileFormat);
+        log.debug("## querySql: " + querySql);
+        log.debug("## outFileFormat: " + outFileFormat);
 
         //Presto Client - See https://github.com/serakfalcon/presto-stream-client
         const client = new Client({
@@ -56,23 +53,23 @@ function pCsvClient(contentJson, sourceDataType, mapPath, dataModelPath, filenam
                     csv += '"'+ item.name + '"' + (index === columns.length - 1 ? '' : ';');
                 });
                 csv += "\n";
-                //log.info("## (ALL) => "+ csv);
+                //log.debug("## (ALL) => "+ csv);
             });
             statement.on('data', (row) => {
                 const keys = Object.keys(row);
                 for (let i = 0; i < keys.length; i++) {
                   const key = keys[i];
-                  //log.info("# key: " + key + "  value: " +row[key]);
+                  //log.debug("# key: " + key + "  value: " +row[key]);
                   csv += row[key] + (i+1==keys.length ? "" : ";");
                 }
                 csv += "\n";
-                //log.info("## (ROW) => "+ csv);
+                //log.debug("## (ROW) => "+ csv);
             });
             statement.on('end',()=> {
-                log.info('## Done CSV: ' + csv);
+                log.debug('## Done CSV: ' + csv);
                 sourceData = createFile(csv, filename, outFileFormat);
                 process.processSource(sourceData, sourceDataType, mapPath, dataModelPath);
-                log.info('## processSource, sourceData: ' + sourceData);
+                log.debug('## processSource, sourceData: ' + sourceData);
 
             });
         },(error)=> {

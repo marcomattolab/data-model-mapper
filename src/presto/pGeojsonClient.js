@@ -20,19 +20,16 @@ const config = require('../../config');
 const log = require('../utils/logger').app(module);
 const fs = require('fs');
 const process = require('../utils/process');
-const util = require('util');
-const pipeline = util.promisify(require('stream').pipeline);
 const { Client } = require('presto-stream-client');
 
 function pGeojsonClient(contentJson, sourceDataType, mapPath, dataModelPath, filename) {
     var geojson = '';
     try {
-        log.info("## Doing query with Presto (GEOJSON)...");
-
+        log.debug("## Doing query with Presto (GEOJSON)...");
         var querySql=contentJson.querySql;
         var outFileFormat=contentJson.outFileFormat;
-        log.info("## querySql: " + querySql);
-        log.info("## outFileFormat: " + outFileFormat);
+        log.debug("## querySql: " + querySql);
+        log.debug("## outFileFormat: " + outFileFormat);
 
         //Presto Client - See https://github.com/serakfalcon/presto-stream-client
         const client = new Client({
@@ -50,7 +47,7 @@ function pGeojsonClient(contentJson, sourceDataType, mapPath, dataModelPath, fil
             objectMode: true
         }).then((statement)=>{
             statement.on('columns', (columns)=> { 
-                //log.info("## (ALL) => "+JSON.stringify(columns));
+                //log.debug("## (ALL) => "+JSON.stringify(columns));
             });
             statement.on('data', (row)=> {
                 geojson += "{";
@@ -60,16 +57,15 @@ function pGeojsonClient(contentJson, sourceDataType, mapPath, dataModelPath, fil
                   geojson +=  '"'+key + '" : ' +  (row[key][0] == '{' ? row[key] : '"' + row[key] + '"') + (i+1==keys.length ? "" : ",");
                 }
                 geojson += "},\n";
-                //console.log(" geojson (I) ==> " + geojson);
+                //log.debug(" geojson (I) ==> " + geojson);
             });
             statement.on('end',()=> {
                 const geojsonValid = buildGeojson(geojson);
-                log.info('## Done GEOJSON ');
-                //log.info('## Done GEOJSON: ' + geojsonValid);
+                log.debug('## Done GEOJSON: ' + geojsonValid);
                 sourceData = createFile(geojsonValid, filename, outFileFormat);
                 
                 process.processSource(sourceData, sourceDataType, mapPath, dataModelPath);
-                log.info('## processSource, sourceData: ' + sourceData);
+                log.debug('## processSource, sourceData: ' + sourceData);
 
             });
         },(error)=> {
