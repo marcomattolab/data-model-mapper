@@ -76,7 +76,7 @@ module.exports = (sourceDataIn, mapPathIn, dataModelIn) => {
                 pCsvClient.pCsvClient(configJson, "", mapPath, dataModelPath, filename);
 
             } else if ('geojson' == configJson.outFileFormat) {
-                filename = queryPath.slice(0, -8);
+                filename = queryPath.slice(0, -5);
                 filename+= getFileSuffix();
                 pGeojsonClient.pGeojsonClient(configJson, "", mapPath, dataModelPath, filename);
             }
@@ -92,6 +92,7 @@ module.exports = (sourceDataIn, mapPathIn, dataModelIn) => {
 
 function getFileSuffix() {
     var dt = new Date();
-    return dt.getFullYear() + "_" + (dt.getMonth() + 1) + "_" + dt.getDate() + "_" + dt.getTime();
+    //return dt.getFullYear() + "_" + (dt.getMonth() + 1) + "_" + dt.getDate() + "_" + dt.getTime();
+    return dt.getFullYear() + "_" + (dt.getMonth() + 1) + "_" + dt.getDate() + "_" + dt.getHours() + dt.getMinutes() + dt.getSeconds();
 }
 

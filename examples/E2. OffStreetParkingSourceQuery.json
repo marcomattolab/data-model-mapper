@@ -1,0 +1,7 @@
+{
+  "querySql": "SELECT 'Feature' as type, '{\"type\":\"Point\",\"coordinates\":['|| CAST( sum(l.quantity) AS varchar) ||',45.473769948446666]}' as geometry, '{\"id\":' || CAST(sum(l.quantity) AS varchar) || ',\"nome\":\"Giulio Cesare\",\"n_posti\":116 ,\"indirizzo\":\"Piazza Giulio Cesare\",\"comune\":\"Milano\",\"tipo\":\"RESIDENTI/PUBBLICI\"}' as properties  FROM  tpch.sf1.lineitem AS l WHERE 1=1 GROUP BY l.returnflag",
+  "outFileFormat":"geojson",
+  "catalog": "tpch",
+  "schema": "sf1",
+  "description": "This query get data from PRESTO and generate a file like '2. OffStreetParkingSource.geojson' and invoke data-model-mapper as blackbox"
+}

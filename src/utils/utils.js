@@ -245,7 +245,6 @@ const isReadableStream = (obj) => {
 };
 
 const promiseTimeout = (ms, promise) => {
-
     // Create a promise that rejects in <ms> milliseconds
     let timeout = new Promise((resolve, reject) => {
         let id = setTimeout(() => {

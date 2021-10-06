@@ -1,18 +1,63 @@
 
-
+############################################################ 
+## E1 - Query for "E1. BikeHireDockingStationQuery.json"
+## "outFileFormat":"geojson"
+## Note: In the json replace  "  =>  \"
+############################################################ 
 SELECT 
 'Feature' as type, 
 '{"type":"Point","coordinates":['|| CAST( sum(l.quantity) AS varchar) ||',45.473769948446666]}' as geometry,
 '{"ID":' || CAST(sum(l.quantity) AS varchar) || ',"BIKE_SH":"072 Cardinal Ferrari","INDIRIZZO":"Via S.Calimero","ANNO":2008,"STALLI":21,"LOCALIZ":"Carreggiata"}' as properties 
-FROM  tpch.sf1.lineitem AS l WHERE 1=1 GROUP BY l.returnflag;
+FROM  tpch.sf1.lineitem AS l WHERE 1=1 GROUP BY l.returnflag
 
 
 
+############################################################ 
+## E2 - Query for "E2. OffStreetParkingSourceQuery.json"
+## "outFileFormat":"geojson"
+## Note: In the json replace  "  =>  \"
+############################################################ 
 SELECT 
-	comment,
-	shipmode,
-	shipinstruct, 
-	quantityorderkey
-from tpch.sf1.lineitem AS l 
-WHERE 1=1;
+'Feature' as type, 
+'{"type":"Point","coordinates":['|| CAST( sum(l.quantity) AS varchar) ||',45.473769948446666]}' as geometry,
+'{"id":' || CAST(sum(l.quantity) AS varchar) || ',"nome":"Giulio Cesare","n_posti":116 ,"indirizzo":"Piazza Giulio Cesare","comune":"Milano","tipo":"RESIDENTI/PUBBLICI"}' as properties 
+FROM  tpch.sf1.lineitem AS l WHERE 1=1 GROUP BY l.returnflag
+
+
+
+
+############################################################ 
+## E3 - Query for "E3. BikeHireDockingStationQuery.json"
+## "outFileFormat":"csv"
+############################################################ 
+SELECT  l.returnflag as localita_di_intervento,  l.returnflag as attrattore_tipo, 
+l.returnflag as attrattore_nome, l.returnflag as municipio, sum(l.quantity) AS posti_x_manuf, 
+sum(l.quantity) AS tot_manuf, sum(l.quantity) AS tot_posti, '20/09/2016' AS data_di_posa 
+FROM  tpch.sf1.lineitem AS l WHERE 1=1 GROUP BY l.returnflag
+
+
+
+############################################################ 
+## E4 - Query for "E4. PointOfInterestQuery.json"
+## "outFileFormat":"json"
+############################################################ 
+SELECT l.returnflag as FIELD1, '14/02/1992' as FIELD2, 'VIA' as FIELD3,  l.returnflag as FIELD4,  sum(l.quantity) as FIELD5,  
+l.returnflag as FIELD6, l.returnflag as FIELD7, l.returnflag as FIELD8, l.returnflag as FIELD9, l.returnflag as FIELD10, 
+l.returnflag as FIELD11, l.returnflag as FIELD12, l.returnflag as FIELD13, '' as FIELD14, '' as FIELD15, l.returnflag as FIELD16, 
+l.returnflag as FIELD17, l.returnflag as FIELD18, l.returnflag as FIELD19, sum(l.quantity) as FIELD20 
+FROM  tpch.sf1.lineitem AS l WHERE 1=1 GROUP BY l.returnflag
+
+
+
+
+
+
+############################################################ 
+## Other demo query
+############################################################ 
+SELECT  comment,
+		shipmode,
+		shipinstruct, 
+		quantityorderkey
+from tpch.sf1.lineitem AS l WHERE 1=1
 

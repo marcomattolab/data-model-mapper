@@ -24,7 +24,6 @@ const util = require('util');
 const pipeline = util.promisify(require('stream').pipeline);
 const { Client } = require('presto-stream-client');
 
-
 function pGeojsonClient(contentJson, sourceDataType, mapPath, dataModelPath, filename) {
     var geojson = '';
     try {
@@ -65,8 +64,10 @@ function pGeojsonClient(contentJson, sourceDataType, mapPath, dataModelPath, fil
             });
             statement.on('end',()=> {
                 const geojsonValid = buildGeojson(geojson);
-                log.info('## Done GEOJSON: ' + geojsonValid);
+                log.info('## Done GEOJSON ');
+                //log.info('## Done GEOJSON: ' + geojsonValid);
                 sourceData = createFile(geojsonValid, filename, outFileFormat);
+                
                 process.processSource(sourceData, sourceDataType, mapPath, dataModelPath);
                 log.info('## processSource, sourceData: ' + sourceData);
 
