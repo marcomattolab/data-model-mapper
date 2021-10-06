@@ -92,6 +92,6 @@ module.exports = (sourceDataIn, mapPathIn, dataModelIn) => {
 
 function getFileSuffix() {
     var dt = new Date();
-    return dt.getFullYear() + "_" + (dt.getMonth() + 1) + "_" + dt.getDate() + "_" + dt.getHours() + dt.getMinutes() + dt.getSeconds();
+    return "_"+dt.getFullYear() + (dt.getMonth() + 1) + dt.getDate() + "_" + dt.getHours() + dt.getMinutes() + dt.getSeconds();
 }
 

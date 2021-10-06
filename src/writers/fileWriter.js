@@ -24,15 +24,24 @@ const config = require('../../config').fileWriter;
 var outFileStream = undefined;
 var isFirstObject = true;
 
-
+const mainconfig = require('../../config');
 
 const writeObject = async (objNumber, obj, addBRLine) => {
 
     /** Initialize File Stream and its first content ***/
     if (utils.isFileWriterActive && !outFileStream) {
 
-        outFileStream = fs.createWriteStream(process.env.outFilePath || utils.parseFilePath(config.filePath).absolute);
-        outFileStream.write("[");
+        if (mainconfig.mode == 'commandLineExt') {
+            var dt = new Date();
+            let suffix = "_"+dt.getFullYear() + (dt.getMonth() + 1) + dt.getDate() + "_" + dt.getHours() + dt.getMinutes() + dt.getSeconds();
+            let generatedFile = process.env.outFilePath.replace(".json","")+suffix+".json"
+            outFileStream = fs.createWriteStream(generatedFile || utils.parseFilePath(config.filePath).absolute);
+            outFileStream.write("[");
+        } 
+        if (mainconfig.mode != 'commandLineExt') {
+            outFileStream = fs.createWriteStream(process.env.outFilePath || utils.parseFilePath(config.filePath).absolute);
+            outFileStream.write("[");
+        }
 
     }
 
