@@ -60,7 +60,7 @@ module.exports = (sourceDataIn, mapPathIn, dataModelIn) => {
             }
 
             //Retrieve configJson with query and outFileFormat
-            //log.info("## queryPath " + queryPath);
+            log.info("## queryPath '" + queryPath + "'");
             var data=fs.readFileSync(queryPath, 'utf8');
             var configJson=JSON.parse(data);
             //log.info("## data " + data);
