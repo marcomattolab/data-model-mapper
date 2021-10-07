@@ -36,15 +36,11 @@ function pCsvClient(contentJson, sourceDataType, mapPath, dataModelPath, filenam
         const client = new Client({
             user: config.presto_user,
             host: config.presto_host,
-            port: config.presto_port,
-            catalog: contentJson.datalog,
-            schema: contentJson.schema
+            port: config.presto_port
         });
 
         client.execute({
             query: ''+querySql,
-            //catalog: 'tpch',
-            //schema:  'sf1',
             objectMode: true
         }).then((statement)=>{
             statement.on('columns', (columns)=> {

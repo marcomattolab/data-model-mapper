@@ -1,7 +1,5 @@
 {
   "querySql":"SELECT 'Feature' as type, '{\"type\":\"Point\",\"coordinates\":['|| CAST( sum(l.quantity) AS varchar) ||',45.473769948446666]}' as geometry, '{\"ID\":' || CAST(sum(l.quantity) AS varchar) || ',\"BIKE_SH\":\"072 Cardinal Ferrari\",\"INDIRIZZO\":\"Via S.Calimero\",\"ANNO\":2008,\"STALLI\":21,\"LOCALIZ\":\"Carreggiata\"}' as properties FROM  tpch.sf1.lineitem AS l WHERE 1=1 GROUP BY l.orderkey LIMIT 1000",
   "outFileFormat":"geojson",
-  "catalog": "tpch",
-  "schema": "sf1",
   "description": "This query get a large amount of data (Performance) from PRESTO and generate a file like '1b. BikeHireDockingStationSource.geojson' and invoke data-model-mapper as blackbox"
 }

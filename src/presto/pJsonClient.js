@@ -36,9 +36,7 @@ function pJsonClient(contentJson, sourceDataType, mapPath, dataModelPath, filena
         const client = new Client({
             user: config.presto_user,
             host: config.presto_host,
-            port: config.presto_port,
-            catalog: contentJson.datalog,
-            schema: contentJson.schema
+            port: config.presto_port
         });
 
         client.execute({
@@ -46,8 +44,6 @@ function pJsonClient(contentJson, sourceDataType, mapPath, dataModelPath, filena
             //query: 'SELECT l.returnflag as address, sum(l.quantity) AS sum_qty FROM  tpch.sf1.lineitem AS l WHERE 1=1 GROUP BY l.returnflag',
             //query: 'SELECT l.returnflag, l.linestatus, sum(l.quantity) AS sum_qty, sum(l.extendedprice) AS sum_base_price, sum(l.extendedprice * (1 - l.discount)) AS sum_disc_price, sum(l.extendedprice * (1 - l.discount) * (1 + l.tax)) AS sum_charge, avg(l.quantity) AS avg_qty, avg(l.extendedprice) AS avg_price, avg(l.discount) AS avg_disc, count(*) AS count_order FROM tpch.sf1.lineitem AS l WHERE l.shipdate <= DATE \'1998-12-01\' - INTERVAL \'90\' DAY GROUP BY l.returnflag, l.linestatus ORDER BY l.returnflag, l.linestatus',
             //query: 'SHOW SCHEMAS',
-            //catalog: 'tpch',
-            //schema:  'sf1',
             objectMode: true
         }).then((statement)=>{
             statement.on('columns', (columns)=> {  // [{name:"cnt",type:"bigint"}, {name:"usergroup",type:"varchar"}]

@@ -1,7 +1,5 @@
 {
   "querySql":"SELECT  l.returnflag as localita_di_intervento,  l.returnflag as attrattore_tipo, l.returnflag as attrattore_nome, l.returnflag as municipio, sum(l.quantity) AS posti_x_manuf, sum(l.quantity) AS tot_manuf, sum(l.quantity) AS tot_posti, '20/09/2016' AS data_di_posa FROM  tpch.sf1.lineitem AS l WHERE 1=1 GROUP BY l.returnflag",
   "outFileFormat":"csv",
-  "catalog": "tpch",
-  "schema": "sf1",
   "description": "This query get data from PRESTO and generate a file like '3. BikeHireDockingStationSource.csv' and invoke data-model-mapper as blackbox"
 }

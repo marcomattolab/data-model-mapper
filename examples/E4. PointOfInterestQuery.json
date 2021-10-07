@@ -1,7 +1,5 @@
 {
   "querySql":"SELECT l.returnflag as FIELD1, '14/02/1992' as FIELD2, 'VIA' as FIELD3,  l.returnflag as FIELD4,  sum(l.quantity) as FIELD5,  l.returnflag as FIELD6, l.returnflag as FIELD7, l.returnflag as FIELD8, l.returnflag as FIELD9, l.returnflag as FIELD10, l.returnflag as FIELD11, l.returnflag as FIELD12, l.returnflag as FIELD13, '' as FIELD14, '' as FIELD15, l.returnflag as FIELD16, l.returnflag as FIELD17, l.returnflag as FIELD18, l.returnflag as FIELD19, sum(l.quantity) as FIELD20 FROM  tpch.sf1.lineitem AS l WHERE 1=1 GROUP BY l.returnflag",
   "outFileFormat":"json",
-  "catalog": "tpch",
-  "schema": "sf1",
   "description": "This query get data from PRESTO and generate a file like '4. PointOfInterestSource.json' and invoke data-model-mapper as blackbox"
 }
