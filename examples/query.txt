@@ -11,6 +11,37 @@ SELECT
 FROM  tpch.sf1.lineitem AS l WHERE 1=1 GROUP BY l.returnflag
 
 
+############################################################ 
+## E1P - Query for "E1P. BikeHireDockingStationQuery.json"
+## "outFileFormat":"geojson"
+## Note: In the json replace  "  =>  \"
+############################################################ 
+SELECT 
+'Feature' as type, 
+'{"type":"Point","coordinates":['|| CAST( sum(l.quantity) AS varchar) ||',45.473769948446666]}' as geometry,
+'{"ID":' || CAST(sum(l.quantity) AS varchar) || ',"BIKE_SH":"072 Cardinal Ferrari","INDIRIZZO":"Via S.Calimero","ANNO":2008,"STALLI":21,"LOCALIZ":"Carreggiata"}' as properties 
+FROM  tpch.sf1.lineitem AS l WHERE 1=1 GROUP BY l.orderkey 
+LIMIT 1000
+
+
+############################################################ 
+## E1J - Query for "E1J. BikeHireDockingStationQuery.json"  (JOIN between 2 connectors)
+## "outFileFormat":"geojson"
+## Note: In the json replace  "  =>  \"
+############################################################ 
+SELECT 
+'Feature' as type, 
+'{"type":"Point","coordinates":['|| CAST( sum(l.quantity) AS varchar) ||',45.473769948446666]}' as geometry,
+'{"ID":' || CAST(sum(l.quantity) AS varchar) || ',"BIKE_SH":"072 Cardinal Ferrari","INDIRIZZO":"Via S.Calimero","ANNO":2008,"STALLI":21,"LOCALIZ":"Carreggiata"}' as properties 
+FROM postgresql.public.users as u, tpch.sf1.lineitem AS l 
+WHERE 1=1 
+AND l.returnflag = u.name 
+GROUP BY l.orderkey 
+LIMIT 30
+
+
+
+
 
 ############################################################ 
 ## E2 - Query for "E2. OffStreetParkingSourceQuery.json"
@@ -58,6 +89,12 @@ FROM  tpch.sf1.lineitem AS l WHERE 1=1 GROUP BY l.returnflag
 SELECT  comment,
 		shipmode,
 		shipinstruct, 
-		quantityorderkey
+		quantityorderkey,
+		orderkey,
+		linenumber,
+		quantity,
+		extendedprice,
+		discount,
+		tax
 from tpch.sf1.lineitem AS l WHERE 1=1
 

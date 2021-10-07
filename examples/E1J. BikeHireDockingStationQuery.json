@@ -1,0 +1,7 @@
+{
+  "querySql":"SELECT 'Feature' as type, '{\"type\":\"Point\",\"coordinates\":['|| CAST( sum(l.quantity) AS varchar) ||',45.473769948446666]}' as geometry, '{\"ID\":' || CAST(sum(l.quantity) AS varchar) || ',\"BIKE_SH\":\"072 Cardinal Ferrari\",\"INDIRIZZO\":\"Via S.Calimero\",\"ANNO\":2008,\"STALLI\":21,\"LOCALIZ\":\"Carreggiata\"}' as properties FROM postgresql.public.users as u, tpch.sf1.lineitem AS l WHERE 1=1 AND l.returnflag = u.name GROUP BY l.orderkey LIMIT 30",
+  "outFileFormat":"geojson",
+  "catalog": "tpch",
+  "schema": "sf1",
+  "description": "This query get data from PRESTO with a JOIN between 2 connectors and generate a file like '1J. BikeHireDockingStationSource.geojson' and invoke data-model-mapper as blackbox"
+}

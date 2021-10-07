@@ -10,10 +10,18 @@ node mapper -s "examples\\4. PointOfInterestSource.json" -m "examples\\4. PointO
 
 
 
-node mapper -q "examples\\E1. BikeHireDockingStationQuery.json" -m "examples\\E1. BikeHireDockingStationMap.json" -d BikeHireDockingStation --rs 0 --re 3
+node mapper -q "examples\\E1. BikeHireDockingStationQuery.json" -m "examples\\E1. BikeHireDockingStationMap.json" -d BikeHireDockingStation --rs 0 --re 30
 
-node mapper -q "examples\\E2. OffStreetParkingSourceQuery.json" -m "examples\\E2. OffStreetParkingMap.json" -d OffStreetParking --rs 0 --re 3
+node mapper -q "examples\\E2. OffStreetParkingSourceQuery.json" -m "examples\\E2. OffStreetParkingMap.json" -d OffStreetParking --rs 0 --re 30
 
 node mapper -q "examples\\E3. BikeHireDockingStationQuery.json" -m "examples\\E3. BikeHireDockingStationMap.json" -d BikeHireDockingStation --rs 0 --re 3
 
 node mapper -q "examples\\E4. PointOfInterestQuery.json" -m "examples\\E4. PointOfInterestMap.json" -d PointOfInterest --rs 0 --re 3
+
+
+
+# Performance
+node mapper -q "examples\\E1P. BikeHireDockingStationQuery.json" -m "examples\\E1P. BikeHireDockingStationMap.json" -d BikeHireDockingStation --rs 0 --re 1000
+
+# Join
+node mapper -q "examples\\E1J. BikeHireDockingStationQuery.json" -m "examples\\E1J. BikeHireDockingStationMap.json" -d BikeHireDockingStation --rs 0 --re 30
