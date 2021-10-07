@@ -66,7 +66,6 @@ function pCsvClient(contentJson, sourceDataType, mapPath, dataModelPath, filenam
                 sourceData = createFile(csv, filename, outFileFormat);
                 process.processSource(sourceData, sourceDataType, mapPath, dataModelPath);
                 log.debug('## processSource, sourceData: ' + sourceData);
-
             });
         },(error)=> {
             console.error(error);

@@ -25,7 +25,7 @@ const { Client } = require('presto-stream-client');
 function pGeojsonClient(contentJson, sourceDataType, mapPath, dataModelPath, filename) {
     var geojson = '';
     try {
-        log.debug("## Doing query with Presto (GEOJSON)...");
+        log.info("## Doing query with Presto (GEOJSON)...");
         var querySql=contentJson.querySql;
         var outFileFormat=contentJson.outFileFormat;
         log.debug("## querySql: " + querySql);
@@ -62,7 +62,6 @@ function pGeojsonClient(contentJson, sourceDataType, mapPath, dataModelPath, fil
                 
                 process.processSource(sourceData, sourceDataType, mapPath, dataModelPath);
                 log.debug('## processSource, sourceData: ' + sourceData);
-
             });
         },(error)=> {
             console.error(error);

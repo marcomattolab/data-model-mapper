@@ -3,6 +3,9 @@
   "version": "0.0.0",
   "description": "DataModelMapper",
   "main": "mapper.js",
+  "scripts": {
+    "start": "node server.js"
+  },
   "author": {
     "name": "Ermanno Mastrosimone"
   },

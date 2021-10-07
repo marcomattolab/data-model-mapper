@@ -1,0 +1,58 @@
+version: '3.8'
+
+services: 
+  # Data Model Mapper
+  data_model_mapper:
+    build:
+        context: .
+        dockerfile: Dockerfile
+    image: data_model_mapper
+    container_name: data_model_mapper
+    volumes: 
+        - .:/home/node/app
+        - ./node_modules:/home/node/app/node_modules
+    #command: npm start
+    ports:
+        - "8081:8081"
+    depends_on:
+        - "presto-coordinator"
+    links:
+        - presto-coordinator
+    networks:
+        - bigdatanet
+
+# Postgres
+  postgres_con:
+    image: postgres:13.3
+    container_name: postgres_con
+    volumes:
+        - ./presto-server/postgres-data:/var/lib/postgresql/data
+    expose:
+        - 5432
+    ports:
+        - 5432:5432
+    environment:
+        - POSTGRES_PASSWORD=postgres
+        - POSTGRES_USER=postgres
+        - POSTGRES_DB=dashboarddb
+    networks:
+        - bigdatanet
+
+  # Presto
+  presto-coordinator:
+    image: prestodb:latest
+    restart: always
+    ports:
+        - "8080:8080"
+    volumes:
+        - ./presto-server/etc:/opt/presto/etc
+    depends_on:
+        - "postgres_con"
+    links:
+        - postgres_con
+    networks:
+        - bigdatanet
+
+networks:
+  bigdatanet:
+     driver: bridge

@@ -59,7 +59,6 @@ function pJsonClient(contentJson, sourceDataType, mapPath, dataModelPath, filena
                 sourceData = createFile(jsonValid, filename, outFileFormat);
                 process.processSource(sourceData, sourceDataType, mapPath, dataModelPath);
                 log.debug('## processSource, sourceData: ' + sourceData);
-
             });
         },(error)=> {
             console.error(error);
